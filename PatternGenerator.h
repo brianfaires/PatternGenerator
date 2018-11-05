@@ -1,10 +1,5 @@
-#ifndef PATTERN_GENERATOR_H
-#define PATTERN_GENERATOR_H
-
-#include "Arduino.h"
-#include "FastLED.h"
+#pragma once
 #include "PatternCommon.h"
-#include "ArduinoTrace.h"
 
 #define GET_FADE_STEP_SIZE(x) 255.0f / (x+1)
 #define NUM_DIM_PATTERNS 16
@@ -13,7 +8,7 @@
 
 class PatternGenerator {
   public:
-    uint8_t numColors, colorThickness, brightLength, transLength, dimPeriod, colorPeriod;
+    uint8_t numColors, brightLength, transLength, dimPeriod, colorPeriod;
     
     PatternGenerator();
     void WriteDimPattern(uint8_t targetDimPatternIndex, uint8_t* outputArray);
@@ -41,5 +36,3 @@ class PatternGenerator {
     void WriteDimPattern_SlideLow(uint8_t* outputPattern);
     void WriteDimPattern_NoDim(uint8_t* outputPattern);
 };
-
-#endif

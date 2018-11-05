@@ -2,7 +2,6 @@
 
 PatternGenerator::PatternGenerator() {
   numColors = 0;
-  colorThickness = 0;
   brightLength = 0;
   transLength = 0;
   dimPeriod = 0;
@@ -10,11 +9,9 @@ PatternGenerator::PatternGenerator() {
 }
 
 void PatternGenerator::WriteDimPattern(uint8_t targetDimPatternIndex, uint8_t* outputArray) {
-  #ifdef DEBUG_ERRORS
-    if(targetDimPatternIndex >= NUM_DIM_PATTERNS) { Serial.println("ERROR: targetDimPatternIndex out of bounds: " + String(targetDimPatternIndex)); }
-	if(2*transLength + brightLength + 2 > dimPeriod) { Serial.println("ERROR: parameters for PatternGenerator cause oversized dimPeriod."); }
-	if(dimPeriod > MAX_PERIOD) { Serial.println("ERROR: dimPeriod of " + String(dimPeriod) + " is larger than MAX_PERIOD."); }
-  #endif
+  if(targetDimPatternIndex >= NUM_DIM_PATTERNS) { THROW("targetDimPatternIndex out of bounds: " + String(targetDimPatternIndex)) }
+  if(2*transLength + brightLength + 2 > dimPeriod) { THROW("parameters for PatternGenerator cause oversized dimPeriod.") }
+  if(dimPeriod > MAX_PERIOD) { THROW("dimPeriod of " + String(dimPeriod) + " is larger than MAX_PERIOD.") }
   
   switch(targetDimPatternIndex) {
     case 0:   WriteDimPattern_Comet(outputArray); break;
@@ -39,10 +36,8 @@ void PatternGenerator::WriteDimPattern(uint8_t targetDimPatternIndex, uint8_t* o
 }
 
 void PatternGenerator::WriteColorPattern(uint8_t targetColorPatternIndex, PRGB* outputArray) {
-  #ifdef DEBUG_ERRORS
-    if(targetColorPatternIndex >= NUM_COLOR_PATTERNS) { Serial.println("ERROR: targetColorPatternIndex out of bounds: " + String(targetColorPatternIndex)); }
-	if(colorPeriod > MAX_PERIOD) { Serial.println("ERROR: colorPeriod of " + String(colorPeriod) + " is larger than MAX_PERIOD."); }
-  #endif
+  if(targetColorPatternIndex >= NUM_COLOR_PATTERNS) { THROW("targetColorPatternIndex out of bounds: " + String(targetColorPatternIndex)) }
+  if(colorPeriod > MAX_PERIOD) { THROW("colorPeriod of " + String(colorPeriod) + " is larger than MAX_PERIOD.") }
   
   switch(targetColorPatternIndex) {
     case 0:  WriteColorPattern_Gradient(outputArray); break;
@@ -53,13 +48,6 @@ void PatternGenerator::WriteColorPattern(uint8_t targetColorPatternIndex, PRGB* 
 }
 
 void PatternGenerator::WriteColorPattern_Gradient(PRGB* outputArray) {
-  #ifdef DEBUG_ERRORS
-    if(numColors > PALETTE_SIZE || numColors < 1) {
-      THROW("WriteColorPattern_Gradient, numColors = " + String(numColors));
-      ERR_CORRECT(numColors = PALETTE_SIZE;)
-    }
-  #endif
-
   PRGB pattern[colorPeriod];
   
   uint8_t segLength = colorPeriod / numColors;
@@ -84,17 +72,6 @@ void PatternGenerator::WriteColorPattern_Gradient(PRGB* outputArray) {
 }
 
 void PatternGenerator::WriteColorPattern_Blocks(PRGB* outputArray) {
-  #ifdef DEBUG_ERRORS
-    if(numColors > PALETTE_SIZE || numColors < 1) {
-      Serial.println("ERROR: Snake, numColors = " + String(numColors));
-      numColors = PALETTE_SIZE;
-    }
-    if(colorThickness > NUM_LEDS) {
-      Serial.println("Error: Snake, period = " + String(colorThickness));
-      colorThickness = NUM_LEDS / numColors;
-    }
-  #endif
-
   PRGB pattern[colorPeriod];
   uint16_t colorLengths[numColors];
   uint16_t minLength = colorPeriod / numColors;

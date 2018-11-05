@@ -3,21 +3,19 @@
 
 #include "Arduino.h"
 #include "FastLED.h"
-#include "PatternRepeater.h"
+#include "PatternCommon.h"
+#include "ArduinoTrace.h"
 
-#define MIN_BRIGHTNESS 1
-#define GET_FADE_STEP_SIZE(x) (255.0f - MIN_BRIGHTNESS) / (x+1)
+#define GET_FADE_STEP_SIZE(x) 255.0f / (x+1)
 #define NUM_DIM_PATTERNS 16
 #define NUM_COLOR_PATTERNS 2
 
 
 class PatternGenerator {
   public:
-    uint8_t numColors, colorThickness, brightLength, transLength, spacing;
+    uint8_t numColors, colorThickness, brightLength, transLength, dimPeriod, colorPeriod;
     
     PatternGenerator();
-    uint8_t GetDimPeriod();
-    uint16_t GetColorPeriod(uint8_t targetColorPatternIndex);
     void WriteDimPattern(uint8_t targetDimPatternIndex, uint8_t* outputArray);
     void WriteColorPattern(uint8_t targetColorPatternIndex, PRGB* outputArray);
 
